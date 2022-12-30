@@ -19,6 +19,8 @@ type
     PMI_FileProperties: TMenuItem;
     N1: TMenuItem;
     PMI_KillProcess: TMenuItem;
+    Label2: TLabel;
+    lbl_GitHub: TLabel;
     procedure btn_ListClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -27,6 +29,9 @@ type
     procedure PMI_OpenFileFolderClick(Sender: TObject);
     procedure PMI_FilePropertiesClick(Sender: TObject);
     procedure PMI_KillProcessClick(Sender: TObject);
+    procedure lbl_GitHubClick(Sender: TObject);
+    procedure lbl_GitHubMouseLeave(Sender: TObject);
+    procedure lbl_GitHubMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
   private
    Descending: Boolean;
    SortedColumn: Integer;
@@ -139,6 +144,7 @@ begin
       DOSOutput.Delete(0);
       DOSOutput.Delete(0);
    end;
+
    Line := TStringList.Create;
    for I := 0 to DOSOutput.Count - 1 do
    begin
@@ -160,9 +166,6 @@ begin
 
       vLocation := GetPathPID(vPID.ToInteger);
       vAppName := ExtractFileName(vLocation);
-
-      //ShowMessage(GetDosOutput('tasklist | findstr "' + vPID + '"'));
-
 
       if CheckBox_Filter.Checked then
       begin
@@ -191,6 +194,21 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
    DOSOutput := TstringList.Create;
+end;
+
+procedure TForm1.lbl_GitHubClick(Sender: TObject);
+begin
+   ShellExecute(Application.Handle, 'open', PWideChar('https://github.com/Delutto/NetStatGUI'), nil, nil, 0);
+end;
+
+procedure TForm1.lbl_GitHubMouseLeave(Sender: TObject);
+begin
+   lbl_GitHub.Font.Style := [];
+end;
+
+procedure TForm1.lbl_GitHubMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+begin
+   lbl_GitHub.Font.Style := [fsUnderline];
 end;
 
 procedure TForm1.ListView_ConnectionsColumnClick(Sender: TObject; Column: TListColumn);
@@ -258,7 +276,6 @@ begin
       FSnapshotHandle := CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
       FProcessEntry32.dwSize := SizeOf(FProcessEntry32);
       ContinueLoop := Process32First(FSnapshotHandle, FProcessEntry32);
-
       while Integer(ContinueLoop) <> 0 do
       begin
        if ((UpperCase(ExtractFileName(FProcessEntry32.szExeFile)) = UpperCase(ListView_Connections.Selected.SubItems[5])) or
@@ -267,7 +284,6 @@ begin
         ContinueLoop := Process32Next(FSnapshotHandle, FProcessEntry32);
       end;
       CloseHandle(FSnapshotHandle);
-      btn_ListClick(nil);
    end;
 end;
 

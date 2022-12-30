@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'NetStat GUI'
-  ClientHeight = 420
+  Caption = 'NetStat GUI 0.9.0'
+  ClientHeight = 478
   ClientWidth = 1014
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -16,9 +16,35 @@ object Form1: TForm1
   OnCreate = FormCreate
   DesignSize = (
     1014
-    420)
+    478)
   PixelsPerInch = 96
   TextHeight = 13
+  object Label2: TLabel
+    Left = 935
+    Top = 18
+    Width = 50
+    Height = 13
+    Anchors = [akTop, akRight]
+    Caption = 'By Delutto'
+  end
+  object lbl_GitHub: TLabel
+    Left = 944
+    Top = 33
+    Width = 32
+    Height = 13
+    Cursor = crHandPoint
+    Anchors = [akTop, akRight]
+    Caption = 'GitHub'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = 16722731
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    ParentFont = False
+    OnClick = lbl_GitHubClick
+    OnMouseMove = lbl_GitHubMouseMove
+    OnMouseLeave = lbl_GitHubMouseLeave
+  end
   object btn_List: TButton
     Left = 103
     Top = 13
@@ -64,9 +90,9 @@ object Form1: TForm1
   end
   object ListView_Connections: TListView
     Left = 8
-    Top = 66
+    Top = 65
     Width = 998
-    Height = 341
+    Height = 405
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
       item
@@ -112,8 +138,8 @@ object Form1: TForm1
     OnCompare = ListView_ConnectionsCompare
   end
   object PopupMenu1: TPopupMenu
-    Left = 432
-    Top = 208
+    Left = 504
+    Top = 184
     object PMI_OpenFileFolder: TMenuItem
       Caption = 'Abrir local do arquivo'
       OnClick = PMI_OpenFileFolderClick
