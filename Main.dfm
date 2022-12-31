@@ -1,8 +1,8 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'NetStat GUI 0.9.0'
-  ClientHeight = 478
+  Caption = 'NetStat GUI 0.9.1'
+  ClientHeight = 477
   ClientWidth = 1014
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,11 +12,9 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  OnClose = FormClose
-  OnCreate = FormCreate
   DesignSize = (
     1014
-    478)
+    477)
   PixelsPerInch = 96
   TextHeight = 13
   object Label2: TLabel

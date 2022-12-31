@@ -22,8 +22,6 @@ type
     Label2: TLabel;
     lbl_GitHub: TLabel;
     procedure btn_ListClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
-    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure ListView_ConnectionsColumnClick(Sender: TObject; Column: TListColumn);
     procedure ListView_ConnectionsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
     procedure PMI_OpenFileFolderClick(Sender: TObject);
@@ -42,7 +40,6 @@ type
 
 var
   Form1: TForm1;
-  DOSOutput: TstringList;
 
 implementation
 
@@ -126,13 +123,14 @@ end;
 
 procedure TForm1.btn_ListClick(Sender: TObject);
 var
+   DOSOutput: TstringList;
    I, Idx: Integer;
    DOSLine: String;
    Line: TStringList;
    Item: TListItem;
    vProt, vLocalAddr, vPort, vExtAddr, vStatus, vPID, vAppName, vLocation: String;
 begin
-   DOSOutput.Clear;
+   DOSOutput := TstringList.Create;
    ListView_Connections.Clear;
    try
       DOSOutput.Text := Trim(GetDosOutput('Netstat -a -n -o -p TCP'));
@@ -172,6 +170,7 @@ begin
          if vPort <> edt_Port.Text then
             Continue;
       end;
+      ListView_Connections.Items.BeginUpdate;
 
       Item := ListView_Connections.Items.Add;
       Item.Caption := vProt;
@@ -182,18 +181,11 @@ begin
       Item.SubItems.Add(vPID);
       Item.SubItems.Add(vAppName);
       Item.SubItems.Add(vLocation);
+
+      ListView_Connections.Items.EndUpdate;
    end;
    Line.Free;
-end;
-
-procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
    DOSOutput.Free;
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-   DOSOutput := TstringList.Create;
 end;
 
 procedure TForm1.lbl_GitHubClick(Sender: TObject);
@@ -285,6 +277,7 @@ begin
       end;
       CloseHandle(FSnapshotHandle);
    end;
+   btn_ListClick(Self);
 end;
 
 procedure TForm1.PMI_OpenFileFolderClick(Sender: TObject);
