@@ -4,62 +4,88 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, System.IOUtils,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Winapi.PsAPI, System.Math, Vcl.Menus, Winapi.ShellApi, TlHelp32;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls, Winapi.PsAPI, System.Math, Vcl.Menus, Winapi.ShellApi, Winapi.TlHelp32;
 
 type
-  TForm1 = class(TForm)
-    btn_List: TButton;
-    GroupBox1: TGroupBox;
-    Label1: TLabel;
-    edt_Port: TEdit;
-    CheckBox_Filter: TCheckBox;
-    ListView_Connections: TListView;
-    PopupMenu1: TPopupMenu;
-    PMI_OpenFileFolder: TMenuItem;
-    PMI_FileProperties: TMenuItem;
-    N1: TMenuItem;
-    PMI_KillProcess: TMenuItem;
-    Label2: TLabel;
-    lbl_GitHub: TLabel;
-    procedure btn_ListClick(Sender: TObject);
-    procedure ListView_ConnectionsColumnClick(Sender: TObject; Column: TListColumn);
-    procedure ListView_ConnectionsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
-    procedure PMI_OpenFileFolderClick(Sender: TObject);
-    procedure PMI_FilePropertiesClick(Sender: TObject);
-    procedure PMI_KillProcessClick(Sender: TObject);
-    procedure lbl_GitHubClick(Sender: TObject);
-    procedure lbl_GitHubMouseLeave(Sender: TObject);
-    procedure lbl_GitHubMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-  private
-   Descending: Boolean;
-   SortedColumn: Integer;
-   SortPort: Boolean;
-  public
-    { Public declarations }
-  end;
+   TForm1 = class(TForm)
+      btn_List: TButton;
+      GroupBox1: TGroupBox;
+      Label1: TLabel;
+      edt_Port: TEdit;
+      CheckBox_Filter: TCheckBox;
+      ListView_Connections: TListView;
+      PopupMenu1: TPopupMenu;
+      PMI_OpenFileFolder: TMenuItem;
+      PMI_FileProperties: TMenuItem;
+      N1: TMenuItem;
+      PMI_KillProcess: TMenuItem;
+      Label2: TLabel;
+      lbl_GitHub: TLabel;
+      procedure btn_ListClick(Sender: TObject);
+      procedure ListView_ConnectionsColumnClick(Sender: TObject; Column: TListColumn);
+      procedure ListView_ConnectionsCompare(Sender: TObject; Item1, Item2: TListItem; Data: Integer; var Compare: Integer);
+      procedure PMI_OpenFileFolderClick(Sender: TObject);
+      procedure PMI_FilePropertiesClick(Sender: TObject);
+      procedure PMI_KillProcessClick(Sender: TObject);
+      procedure lbl_GitHubClick(Sender: TObject);
+      procedure lbl_GitHubMouseLeave(Sender: TObject);
+      procedure lbl_GitHubMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+    procedure FormCreate(Sender: TObject);
+   private
+      Descending: Boolean;
+      SortedColumn: Integer;
+      SortPort: Boolean;
+   public
+      { Public declarations }
+   end;
 
 var
-  Form1: TForm1;
+   Form1: TForm1;
 
 implementation
 
 {$R *.dfm}
 
+function RunningAsAdmin: Boolean;
+var
+   hToken, hProcess: THandle;
+   pTokenInformation: pointer;
+   ReturnLength: DWord;
+   TokenInformation: TTokenElevation;
+begin
+   Result := False;
+   hProcess := GetCurrentProcess;
+   try
+      if OpenProcessToken(hProcess, TOKEN_QUERY, hToken) then
+      try
+         FillChar(TokenInformation, SizeOf(TokenInformation), 0);
+         pTokenInformation := @TokenInformation;
+         GetTokenInformation(hToken, TokenElevation, pTokenInformation, SizeOf(TokenInformation), ReturnLength);
+         Result := (TokenInformation.TokenIsElevated <> 0);
+      finally
+         CloseHandle(hToken);
+      end;
+   except
+   end;
+end;
+
 function GetPathPID(PID: DWORD): String;
 var
-    Handle: THandle;
+   Handle: THandle;
 begin
    Result := '';
    Handle := OpenProcess(PROCESS_QUERY_INFORMATION or PROCESS_VM_READ, False, PID);
    if Handle <> 0 then
-   try
-      SetLength(Result, MAX_PATH);
-   if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
-      SetLength(Result, StrLen(PChar(Result)))
-   else
-      Result := '';
-   finally
-      CloseHandle(Handle);
+   begin
+      try
+         SetLength(Result, MAX_PATH);
+         if GetModuleFileNameEx(Handle, 0, PChar(Result), MAX_PATH) > 0 then
+            SetLength(Result, StrLen(PChar(Result)))
+         else
+            Result := '';
+      finally
+         CloseHandle(Handle);
+      end;
    end;
 end;
 
@@ -136,7 +162,7 @@ begin
       DOSOutput.Text := Trim(GetDosOutput('Netstat -a -n -o -p TCP'));
    finally
    end;
-   if DOSOutput.Count > 1 then
+   if DOSOutput.Count > 3 then
    begin
       DOSOutput.Delete(0);
       DOSOutput.Delete(0);
@@ -186,6 +212,12 @@ begin
    end;
    Line.Free;
    DOSOutput.Free;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+   if not RunningAsAdmin then
+      ShowMessage('Você deve abrir o programa usando a opção' + #13 + '"Executar como administrador".');
 end;
 
 procedure TForm1.lbl_GitHubClick(Sender: TObject);

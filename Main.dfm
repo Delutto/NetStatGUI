@@ -1,32 +1,32 @@
 object Form1: TForm1
   Left = 0
   Top = 0
-  Caption = 'NetStat GUI 0.9.1'
-  ClientHeight = 477
-  ClientWidth = 1014
+  Caption = 'NetStat GUI 0.9.2'
+  ClientHeight = 476
+  ClientWidth = 1010
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
-  OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   DesignSize = (
-    1014
-    477)
-  PixelsPerInch = 96
+    1010
+    476)
   TextHeight = 13
   object Label2: TLabel
-    Left = 935
+    Left = 931
     Top = 18
     Width = 50
     Height = 13
     Anchors = [akTop, akRight]
     Caption = 'By Delutto'
+    ExplicitLeft = 935
   end
   object lbl_GitHub: TLabel
-    Left = 944
+    Left = 940
     Top = 33
     Width = 32
     Height = 13
@@ -42,6 +42,7 @@ object Form1: TForm1
     OnClick = lbl_GitHubClick
     OnMouseMove = lbl_GitHubMouseMove
     OnMouseLeave = lbl_GitHubMouseLeave
+    ExplicitLeft = 944
   end
   object btn_List: TButton
     Left = 103
@@ -89,8 +90,8 @@ object Form1: TForm1
   object ListView_Connections: TListView
     Left = 8
     Top = 65
-    Width = 998
-    Height = 405
+    Width = 994
+    Height = 404
     Anchors = [akLeft, akTop, akRight, akBottom]
     Columns = <
       item
