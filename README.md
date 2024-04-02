@@ -4,5 +4,5 @@ NetStat GUI é uma ferramenta para listar as conexões e portas em uso pelo prot
 
 [Download](https://raw.githubusercontent.com/Delutto/NetStatGUI/main/bin/NetStatGUI.exe)
 
-![Main](NetStatGUI.png)
-![PouPup](NetStatGUI_Poupup.png)
+![Main](resources/NetStatGUI.png)
+![PouPup](resources/NetStatGUI_Poupup.png)
